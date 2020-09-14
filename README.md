@@ -67,4 +67,36 @@
 
 ![CanBus](/软件架构/CanBus.png)
 
-CanBus有两种数据接口。第一个是基于事件发布的回调函数OnControlCommand；第二个是接收到控制命令时触发d OnGuardianCommand。
+&emsp;&emsp;CanBus有两种数据接口。第一个是基于事件发布的回调函数OnControlCommand；第二个是接收到控制命令时触发d OnGuardianCommand。
+
+### HMI
+
+![HMI](/软件架构/HMI.png)
+
+&emsp;&emsp;Apollo中的人机界面或DreamView是web应用程序，功能包括：  
+
+- 用于可视化相关自动驾驶模块的当前输出，例如规划轨迹、车辆定位、底盘状态等
+- 提供人机界面，供用户查看硬件状态、打开/关闭模块以及启动自主驾驶汽车
+- 提供调试工具，以有效地跟踪模块问题，如PnC Monitor  
+
+### Monitor
+
+![Monitor](/软件架构/Monitor.png)
+
+&emsp;&emsp;车辆所有模块的监控系统，包括硬件。Monitor模块接收来自不同模块的数据，并将其传递给HMI，以便驾驶员观察并确保所有模块均正常工作。如果某个模块或硬件发生故障，monitor模块会向Guardian模块发送警报，Guardian模块会决定需要采取哪些措施来防止崩溃。  
+
+### Guardian
+
+![Guardian](/软件架构/Guardian.png)
+
+&emsp;&emsp;Guardian模块主要是一个行动中心，它根据Monitor模块发送的数据做出行动决定。Guardian模块有两个主要功能：  
+
+- 所有模块工作正常时：Guardian模块保证控制流正常工作。控制信号被发送到CAN总线，效果与不经过Guandian一样。
+- 模块碰撞由Guardian检测-如果Guardian检测到故障，它将阻止控制信号到达CAN总线并使车辆停止。有三种方法可以让Guardian决定如何停车，而要做到这一点，Guardian会求助于最终的Gatekeeper和超声波传感器：  
+    - 如果超声波传感器运行良好，但没有检测到障碍物，Guardian将使汽车缓慢停止
+    - 如果传感器没有响应，Guardian会紧急刹车，使汽车立即停止
+    - 特殊情况：如果HMI通知驾驶员即将发生的碰撞，并且驾驶员在10秒钟内未进行干预，则Guardian将采用紧急制动使车辆立即停止
+
+> 注: 
+> 1. 在上述任何一种情况下，Guardian将始终停止车辆监控检测到任何模块或硬件故障
+> 2. Monitor和Guardian是解耦的，以确保没有单点故障，并且通过模块化方法，可以在使用额外的操作来修改操作中心的同时，不影响监控系统的功能，因为Monitor模块也与HMI通信
