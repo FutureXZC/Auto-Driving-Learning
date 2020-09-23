@@ -1,0 +1,71 @@
+syntax = "proto2";
+
+package apollo.perception;
+
+import "modules/common/proto/header.proto";
+
+message TrafficLightBox {  // 交通信号灯盒模型
+  optional int32 x = 1;
+  optional int32 y = 2;
+  optional int32 width = 3;
+  optional int32 height = 4;
+  optional TrafficLight.Color color = 5;
+  optional bool selected = 6;
+  optional string camera_name = 7;
+}
+
+message TrafficLightDebug {  // 交通信号灯调试
+  optional TrafficLightBox cropbox = 1;  // 裁剪盒模型？
+  repeated TrafficLightBox box = 2;  // 信号灯盒模型
+  optional int32 signal_num = 3;  // 信号数量
+  optional int32 valid_pos = 4;  // 有效的方位
+  optional double ts_diff_pos = 5;
+  optional double ts_diff_sys = 6;
+  optional int32 project_error = 7;  // 投影错误
+  optional double distance_to_stop_line = 8;  // 到停止线的距离
+  optional int32 camera_id = 9 [deprecated = true];
+  repeated TrafficLightBox crop_roi = 10;
+  repeated TrafficLightBox projected_roi = 11;  // 投影的感兴趣区域
+  repeated TrafficLightBox rectified_roi = 12;  // 修正的感兴趣区域
+  repeated TrafficLightBox debug_roi = 13;  // 调试的感兴趣区域
+}
+
+message TrafficLight {
+  enum Color {
+    UNKNOWN = 0;
+    RED = 1;
+    YELLOW = 2;
+    GREEN = 3;
+    BLACK = 4;
+  };
+  optional Color color = 1;
+
+  // 地图数据上的红绿灯id，string
+  optional string id = 2;
+
+  // 识别结果的置信度
+  optional double confidence = 3 [default = 1.0];
+
+  // 时间记录
+  optional double tracking_time = 4;
+
+  // 标记信号灯是否闪烁的标识
+  optional bool blink = 5;
+
+  // 信号灯剩余时间，由v2x获取
+  optional double remaining_time = 6;
+}
+
+message TrafficLightDetection {  // 信号灯识别
+  optional apollo.common.Header header = 2;
+  repeated TrafficLight traffic_light = 1;
+  optional TrafficLightDebug traffic_light_debug = 3;
+  optional bool contain_lights = 4;
+  enum CameraID {
+    CAMERA_FRONT_LONG = 0;
+    CAMERA_FRONT_NARROW = 1;
+    CAMERA_FRONT_SHORT = 2;
+    CAMERA_FRONT_WIDE = 3;
+  };
+  optional CameraID camera_id = 5;
+}

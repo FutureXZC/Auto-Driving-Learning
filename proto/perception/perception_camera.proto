@@ -1,0 +1,113 @@
+syntax = "proto2";
+
+package apollo.perception.camera;
+
+import "modules/common/proto/geometry.proto";
+import "modules/common/proto/header.proto";
+import "modules/perception/proto/perception_obstacle.proto";
+
+enum CameraErrorCode {  // 相机错误代码
+  ERROR_NONE = 0;
+  ERROR_UNKNOWN = 1;
+}
+
+enum LaneLineType {  // 车道线类型
+  WHITE_DASHED = 0;
+  WHITE_SOLID = 1;
+  YELLOW_DASHED = 2;
+  YELLOW_SOLID = 3;
+}
+
+enum LaneLinePositionType {  // 车道线位置类型
+  BOLLARD_LEFT = -5;  // 左侧路桩
+  FOURTH_LEFT = -4;  // 左侧相邻第四车道
+  THIRD_LEFT = -3;  // 左侧相邻第三车道
+  ADJACENT_LEFT = -2;  //左侧相邻车道的左侧车道 lane marking on the left side next to ego lane
+  EGO_LEFT = -1;       // 左侧相邻车道 left lane marking of the ego lane
+  EGO_RIGHT = 1;       // 右侧相邻车道 right lane marking of the ego lane
+  ADJACENT_RIGHT = 2;  // 右侧相邻车道的右侧车道 lane marking on the right side next to ego lane
+  THIRD_RIGHT = 3;  // 右侧相邻第三车道
+  FOURTH_RIGHT = 4;  // 右侧相邻第四车道
+  BOLLARD_RIGHT = 5;  // 右侧路桩
+  OTHER = 6;    // 其他类型的车道
+  UNKNOWN = 7;  // 位置类型
+}
+
+enum LaneLineUseType {  // 道路线使用类型
+  REAL = 0;
+  VIRTUAL = 1;
+}
+
+message LaneLineCubicCurve {  // 道路线的三次曲线
+  optional float longitude_min = 1;
+  optional float longitude_max = 2;
+  optional float a = 3;
+  optional float b = 4;
+  optional float c = 5;
+  optional float d = 6;
+}
+
+message EndPoints {
+  optional apollo.common.Point2D start = 1;
+  optional apollo.common.Point2D end = 2;
+}
+
+message CameraLaneLine {  // 相机-道路线
+  optional LaneLineType type = 1;
+  optional LaneLinePositionType pos_type = 2;
+  // @brief camera coordinate system
+  optional LaneLineCubicCurve curve_camera_coord = 3;
+  // @brief image coordinate system
+  optional LaneLineCubicCurve curve_image_coord = 4;
+  // @brief curve camera point set
+  repeated apollo.common.Point3D curve_camera_point_set = 5;
+  // @brief curve image point set
+  repeated apollo.common.Point2D curve_image_point_set = 6;
+
+  // @brief image end point set
+  repeated EndPoints image_end_point_set = 7;
+  // @brief track id
+  optional int32 track_id = 8;
+  // @brief confidence for lane line
+  optional float confidence = 9;
+
+  optional LaneLineUseType use_type = 10;
+}
+
+message CameraCalibrator {  // 相机校准器
+  optional float pitch_angle = 1;  // 俯仰角
+  optional float camera_height = 2;  // 相机高度
+}
+
+message CameraObstacle {  // 相机-障碍
+  optional PerceptionObstacle obstacle = 1;  // PerceptionObstacle
+
+  // 2D 信息
+  enum CameraType {
+    UNKNOWN = 0;
+    UNKNOWN_MOVABLE = 1;
+    UNKNOWN_UNMOVABLE = 2;
+    PEDESTRIAN = 3;  // Pedestrian, usually determined by moving behaviour.
+    BICYCLE = 4;     // bike, motor bike
+    VEHICLE = 5;     // Passenger car or truck.
+  };
+
+  optional CameraType type = 21;   // obstacle type
+  repeated float type_probs = 22;  // obstacle type
+  optional apollo.common.Point2D upper_left =
+      23;  // 包围盒的左上角
+  optional apollo.common.Point2D lower_right =
+      24;  // 包围盒的右下角
+  repeated apollo.common.Point2D key_points = 25;  // 2D key points
+  repeated string debug_message = 26;              // 调试信息
+}
+
+// 调试信息
+message CameraDebug {
+  optional apollo.common.Header header = 1;  // header
+  optional string source_topic = 2;          // which topic to get the frame
+  optional CameraErrorCode error_code = 3 [default = ERROR_NONE];  // error code
+  optional CameraCalibrator camera_calibrator = 4;
+  repeated CameraLaneLine camera_laneline = 5;
+  repeated CameraObstacle camera_obstacle = 6;  // an array of obstacles
+}

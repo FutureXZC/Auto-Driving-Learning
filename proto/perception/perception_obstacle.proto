@@ -1,0 +1,192 @@
+syntax = "proto2";
+
+package apollo.perception;
+
+import "modules/common/proto/error_code.proto";
+import "modules/common/proto/geometry.proto";
+import "modules/common/proto/header.proto";
+import "modules/common/proto/pnc_point.proto";
+import "modules/map/proto/map_lane.proto";
+
+message BBox2D {  // 2d包围盒，bounding box
+  optional double xmin = 1;  // in pixels.
+  optional double ymin = 2;  // in pixels.
+  optional double xmax = 3;  // in pixels.
+  optional double ymax = 4;  // in pixels.
+}
+
+message LightStatus {  // 信号灯状态
+  optional double brake_visible = 1;  // 减速/刹车指示灯可见
+  optional double brake_switch_on = 2;  // 减速指示灯打开
+  optional double left_turn_visible = 3;  // 左转灯可见
+  optional double left_turn_switch_on = 4;  // 左转灯打开
+  optional double right_turn_visible = 5;  // 右转灯可见
+  optional double right_turn_switch_on = 6;  // 右转灯打开
+}
+
+message V2XInformation {  // 车联网的基本信息
+  enum V2XType {  // 车联网类型
+    NONE = 0;  // 无特殊识别
+    ZOMBIES_CAR = 1;  // 僵尸车，即长期无人使用、破损严重的车
+    BLIND_ZONE = 2;  // 盲区
+  };
+  repeated V2XType v2x_type = 1;
+}
+
+message SensorMeasurement {  // 传感器测量值
+  optional string sensor_id = 1;  // 传感器id
+  optional int32 id = 2;  // 障碍物的id
+
+  optional apollo.common.Point3D position = 3;
+  optional double theta = 4;
+  optional double length = 5;
+  optional double width = 6;
+  optional double height = 7;
+
+  optional apollo.common.Point3D velocity = 8;
+
+  optional PerceptionObstacle.Type type = 9;  // 障碍物类型
+  optional PerceptionObstacle.SubType sub_type = 10;  // 障碍物子类型
+  optional double timestamp = 11;  // 时间戳
+  optional BBox2D box = 12;  // only for camera measurements
+}
+
+message Trajectory {  // 轨迹
+  optional double probability = 1;  // 目标物在将来走这条轨迹的可能性？
+  repeated apollo.common.TrajectoryPoint trajectory_point = 2;
+}
+
+message DebugMessage {
+  // 一个障碍物可以有多条预测的轨迹
+  repeated Trajectory trajectory = 1;
+}
+
+message PerceptionObstacle {  //感知的障碍物
+  optional int32 id = 1;  // 障碍物id
+
+  // 障碍物在世界坐标系中的坐标
+  optional apollo.common.Point3D position = 2;  
+
+  optional double theta = 3;  // 世界坐标系中的朝向
+  optional apollo.common.Point3D velocity = 4;  // 障碍的速度
+  // 障碍物的大小（包围盒模型）
+  optional double length = 5;  // obstacle length.
+  optional double width = 6;   // obstacle width.
+  optional double height = 7;  // obstacle height.
+
+  repeated apollo.common.Point3D polygon_point = 8;  // 多边形的点，即障碍物的顶点信息
+
+  // 自识别到该障碍物起至今的追踪时间
+  optional double tracking_time = 9;
+
+  enum Type {
+    UNKNOWN = 0;
+    UNKNOWN_MOVABLE = 1;  // 可移动的障碍
+    UNKNOWN_UNMOVABLE = 2;  // 不可移动的障碍
+    PEDESTRIAN = 3;  // 行人，通常由运动的行为识别
+    BICYCLE = 4;     // 自行车，电动车，摩托车
+    VEHICLE = 5;     // 轿车或卡车
+  };
+  optional Type type = 10;         // 障碍类型
+  optional double timestamp = 11;  // GPS上的时间戳
+
+  // 以下内容仅在调试时使用, 实际当中并不会填充以下字段
+  // 格式: [x0, y0, z0, x1, y1, z1...]
+  repeated double point_cloud = 12 [packed = true];  // 点云
+
+  optional double confidence = 13 [deprecated = true];  // 信源？
+  enum ConfidenceType {
+    CONFIDENCE_UNKNOWN = 0;
+    CONFIDENCE_CNN = 1;
+    CONFIDENCE_RADAR = 2;
+  };
+  optional ConfidenceType confidence_type = 14 [deprecated = true];
+  // 所识别对象的轨迹
+  repeated apollo.common.Point3D drops = 15 [deprecated = true];
+
+  //以下字段仅在Apollo 4.0中添加
+  optional apollo.common.Point3D acceleration = 16;  // 障碍物加速度
+
+  // 在世界坐标系中的固定障碍物点
+  // 上面定义的位置是障碍物包围盒的地面中心（投影到地面的中心？）
+  // position defined above is the obstacle bounding box ground center
+  optional apollo.common.Point3D anchor_point = 17;
+  optional BBox2D bbox2d = 18;
+
+  enum SubType {
+    ST_UNKNOWN = 0;
+    ST_UNKNOWN_MOVABLE = 1;
+    ST_UNKNOWN_UNMOVABLE = 2;
+    ST_CAR = 3;
+    ST_VAN = 4;
+    ST_TRUCK = 5;
+    ST_BUS = 6;
+    ST_CYCLIST = 7;
+    ST_MOTORCYCLIST = 8;
+    ST_TRICYCLIST = 9;
+    ST_PEDESTRIAN = 10;
+    ST_TRAFFICCONE = 11;
+  };
+  optional SubType sub_type = 19;  // 障碍物的子类型
+
+  repeated SensorMeasurement measurements = 20;  // 传感器测量的数据
+
+  // 障碍物的最低点到地面的正交距离（orthogonal distance）
+  optional double height_above_ground = 21 [default = nan];
+
+  // 距离的协方差，行优先的3*3的矩阵
+  repeated double position_covariance = 22 [packed = true];
+  // 速度的协方差，行优先的3*3的矩阵
+  repeated double velocity_covariance = 23 [packed = true];
+  // 加速度的协方差，行优先的3*3的矩阵
+  repeated double acceleration_covariance = 24 [packed = true];
+
+  // 车灯
+  optional LightStatus light_status = 25;
+
+  // 调试信息
+  optional DebugMessage msg = 26;
+
+  enum Source {
+    HOST_VEHICLE = 0;
+    V2X = 1;
+  };
+
+  optional Source source = 27 [default = HOST_VEHICLE];
+  optional V2XInformation v2x_info = 28;
+}
+
+message LaneMarker {  // 车道标记
+  optional apollo.hdmap.LaneBoundaryType.Type lane_type = 1;  // 车道类型
+  optional double quality = 2;  // 品质，range = [0,1]; 1 = the best quality
+  optional int32 model_degree = 3;  // 角度
+
+  // 方程： X = c3 * Z^3 + c2 * Z^2 + c1 * Z + c0
+  optional double c0_position = 4;  // 位置
+  optional double c1_heading_angle = 5;  // 朝向角度
+  optional double c2_curvature = 6;  // 曲率
+  optional double c3_curvature_derivative = 7;  // 曲率导数
+  optional double view_range = 8;  // 可视角度
+  optional double longitude_start = 9;  // 起始经度
+  optional double longitude_end = 10;  // 终点经度
+}
+
+message LaneMarkers {
+  optional LaneMarker left_lane_marker = 1;  // 左转车道
+  optional LaneMarker right_lane_marker = 2;  // 右转车道
+  repeated LaneMarker next_left_lane_marker = 3;  // 下一个左转车道
+  repeated LaneMarker next_right_lane_marker = 4;  // 下一个右转车道
+}
+
+message CIPVInfo {  // 当前车道中最接近的车辆，Closest In Path Vehicle (CIPV)
+  optional int32 cipv_id = 1;  // 当前距离最近车辆的id
+  repeated int32 potential_cipv_id = 2;  // 潜在的可能成为最近车辆的id
+}
+
+message PerceptionObstacles {  // 感知到的障碍集和
+  repeated PerceptionObstacle perception_obstacle = 1;  // 障碍物数组
+  optional apollo.common.Header header = 2;  // 头部信息
+  optional apollo.common.ErrorCode error_code = 3 [default = OK];
+  optional LaneMarkers lane_marker = 4;
+  optional CIPVInfo cipv_info = 5;  // 当前车道中最接近的车辆
+}

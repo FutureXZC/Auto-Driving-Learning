@@ -1,0 +1,42 @@
+syntax = "proto2";
+
+package apollo.perception;
+
+import "modules/common/proto/header.proto";
+
+message MotionType {  // 动作类型
+  optional float m00 = 1;
+  optional float m01 = 2;
+  optional float m02 = 3;
+  optional float m03 = 4;
+  optional float m10 = 5;
+  optional float m11 = 6;
+  optional float m12 = 7;
+  optional float m13 = 8;
+  optional float m20 = 9;
+  optional float m21 = 10;
+  optional float m22 = 11;
+  optional float m23 = 12;
+  optional float m30 = 13;
+  optional float m31 = 14;
+  optional float m32 = 15;
+  optional float m33 = 16;
+}
+
+message VehicleStatus {  // 车辆状态
+  optional float roll_rate = 1;  // 转速，角速度
+  optional float pitch_rate = 2;  // 俯仰角速度
+  optional float yaw_rate = 3;  // 横摆角速度
+  optional float velocity = 4;  // 速度
+  optional float velocity_x = 5;
+  optional float velocity_y = 6;
+  optional float velocity_z = 7;
+  optional double time_ts = 8;  // time stamp
+  optional double time_d = 9;
+  optional MotionType motion = 10;
+}
+
+message Motion_Service {
+  // 根据此前的时间戳存储的车辆信息
+  repeated VehicleStatus vehicle_status = 1;
+  optional apollo.common.Header header = 2;
