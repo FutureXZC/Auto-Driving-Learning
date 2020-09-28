@@ -1,0 +1,14 @@
+syntax = "proto2";
+
+package apollo.hdmap;
+
+import "modules/map/proto/map_id.proto";
+import "modules/map/proto/map_geometry.proto";
+
+//定义减速带
+
+message SpeedBump {
+  optional Id id = 1;
+  repeated Id overlap_id = 2;
+  repeated Curve position = 3;  // 曲线
+}

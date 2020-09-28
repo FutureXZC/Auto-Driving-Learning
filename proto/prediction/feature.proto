@@ -1,0 +1,145 @@
+syntax = "proto2";
+
+package apollo.prediction;
+
+import "modules/common/proto/geometry.proto";
+import "modules/common/proto/pnc_point.proto";
+import "modules/map/proto/map_lane.proto";
+import "modules/perception/proto/perception_obstacle.proto";
+import "modules/prediction/proto/lane_graph.proto";
+import "modules/prediction/proto/prediction_point.proto";
+
+message Lane {  // 道路(集和)
+  // 所有可能为附近道路的特征
+  repeated LaneFeature current_lane_feature = 1;
+
+  // 最有可能是附近道路的特征
+  optional LaneFeature lane_feature = 2;
+
+  // 所有邻近道路的特征
+  repeated LaneFeature nearby_lane_feature = 3;
+
+  // 道路图像
+  optional LaneGraph lane_graph = 4;
+  optional LaneGraph lane_graph_ordered = 5;
+
+  // 建模
+  optional double label_update_time_delta = 26;
+}
+
+message LaneFeature {  // 道路特征
+  optional string lane_id = 1;
+  optional uint32 lane_turn_type = 2;
+  optional double lane_s = 3;
+  optional double lane_l = 4;
+  optional double angle_diff = 5;
+  optional double dist_to_left_boundary = 6;
+  optional double dist_to_right_boundary = 7;
+  optional double lane_heading = 8;
+  optional apollo.hdmap.Lane.LaneType lane_type = 9;
+}
+
+message JunctionExit {  // 路口的出口
+  optional string exit_lane_id = 1;
+  optional apollo.common.Point3D exit_position = 2;
+  optional double exit_heading = 3;
+  optional double exit_width = 4;
+}
+
+message JunctionFeature {  // 路口特征
+  optional string junction_id = 1;
+  optional double junction_range = 2;
+  optional LaneFeature enter_lane = 3;
+  repeated JunctionExit junction_exit = 4;
+  // mlp: Multi-Layer Perceptron多层感知神经网络
+  repeated double junction_mlp_feature = 5;
+  repeated int32 junction_mlp_label = 6;  // masks矩阵的维度/数量? dim is number of masks, i.e. 12
+  repeated double junction_mlp_probability = 7;
+  repeated string start_lane_id = 8;
+}
+
+message ObstaclePriority {  // 障碍的优先级
+  enum Priority {
+    CAUTION = 1;
+    NORMAL = 2;
+    IGNORE = 3;
+  }
+  optional Priority priority = 25 [default = NORMAL];
+}
+
+message Trajectory {  // 运动轨迹
+  optional double probability = 1;  // probability of this trajectory
+  repeated apollo.common.TrajectoryPoint trajectory_point = 2;
+}
+
+// next id = 37
+message Feature {  // 特征
+  // Obstacle ID
+  optional int32 id = 1;
+
+  // 障碍物特征
+  repeated apollo.common.Point3D polygon_point = 30;
+  optional apollo.common.Point3D position = 2;
+  optional apollo.common.Point3D front_position = 27;
+  optional apollo.common.Point3D velocity = 3;
+  optional apollo.common.Point3D raw_velocity = 28;  // 来自perception
+  optional apollo.common.Point3D acceleration = 4;
+  optional double velocity_heading = 5;
+  optional double speed = 6;
+  optional double acc = 7;
+  optional double theta = 8;
+  optional double length = 9;
+  optional double width = 10;
+  optional double height = 11;
+  optional double tracking_time = 12;
+  optional double timestamp = 13;
+
+  // 障碍物的特异性特征
+  optional Lane lane = 14;
+  optional JunctionFeature junction_feature = 26;
+
+  // 障碍物的运动轨迹特征
+  optional apollo.common.Point3D t_position = 16;
+  optional apollo.common.Point3D t_velocity = 17 [deprecated = true];
+  optional double t_velocity_heading = 18 [deprecated = true];
+  optional double t_speed = 19 [deprecated = true];
+  optional apollo.common.Point3D t_acceleration = 20 [deprecated = true];
+  optional double t_acc = 21 [deprecated = true];
+
+  optional bool is_still = 22 [default = false];
+  optional apollo.perception.PerceptionObstacle.Type type = 23;
+  optional double label_update_time_delta = 24;
+
+  optional ObstaclePriority priority = 25;
+
+  optional bool is_near_junction = 29 [default = false];
+
+  // 障碍物真正例(ground-truth)标记
+  repeated PredictionTrajectoryPoint future_trajectory_points = 31;
+
+  // 短期预测的障碍物轨迹点集
+  repeated apollo.common.TrajectoryPoint
+      short_term_predicted_trajectory_points = 32;
+
+  // 预测的障碍物路径
+  repeated Trajectory predicted_trajectory = 33;
+
+  // ADC: Auto Driving Car
+  // 同一画面/帧(frame)中自动驾驶车辆的轨迹
+  repeated apollo.common.TrajectoryPoint adc_trajectory_point = 34;
+
+  // 周围的道路
+  repeated string surrounding_lane_id = 35;
+  repeated string within_lane_id = 36;
+}
+
+message ObstacleHistory {
+  repeated Feature feature = 1;
+  optional bool is_trainable = 2 [default = false];
+}
+
+message FrameEnv {
+  optional double timestamp = 1;
+  optional ObstacleHistory ego_history = 2;
+  repeated ObstacleHistory obstacles_history = 3;
+}

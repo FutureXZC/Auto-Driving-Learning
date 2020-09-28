@@ -1,0 +1,36 @@
+syntax = "proto2";
+
+import "modules/common/proto/geometry.proto";
+
+package apollo.hdmap;
+// 定义map中交通元素多种几何形状，主要是直线、曲线
+
+// Polygon, not necessary convex.
+// 多边形，没有凸出？？？
+message Polygon {
+  repeated apollo.common.PointENU point = 1;
+}
+
+// Straight line segment.
+// 直线段
+message LineSegment {
+  repeated apollo.common.PointENU point = 1;
+}
+
+// Generalization of a line.
+//线的泛型定义
+message CurveSegment {
+  oneof curve_type {
+    LineSegment line_segment = 1;
+  }
+  optional double s = 6;  // start position (s-coordinate)//起始位置
+  optional apollo.common.PointENU start_position = 7;//二维起始坐标
+  optional double heading = 8;  // start orientation//起始方向
+  optional double length = 9;//长度
+}
+
+// An object similar to a line but that need not be straight.
+//曲线
+message Curve {
+  repeated CurveSegment segment = 1;
+}

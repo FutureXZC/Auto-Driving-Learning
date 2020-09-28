@@ -1,0 +1,9 @@
+syntax = "proto2";
+
+package apollo.hdmap;
+
+// Global unique ids for all objects (include lanes, junctions, overlaps, etc).
+// 全局唯一id
+message Id {
+  optional string id = 1;
+}

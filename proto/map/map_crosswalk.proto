@@ -1,0 +1,17 @@
+syntax = "proto2";
+
+package apollo.hdmap;
+
+import "modules/map/proto/map_geometry.proto";
+import "modules/map/proto/map_id.proto";
+
+// Crosswalk is a place designated for pedestrians to cross a road.
+// 定义人行横道
+
+message Crosswalk {
+  optional Id id = 1;  // 编号
+
+  optional Polygon polygon = 2;  // 人行横道形状
+
+  repeated Id overlap_id = 3;  // 重叠id
+}

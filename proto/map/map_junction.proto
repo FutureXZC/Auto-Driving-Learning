@@ -1,0 +1,16 @@
+syntax = "proto2";
+
+package apollo.hdmap;
+
+import "modules/map/proto/map_id.proto";
+import "modules/map/proto/map_geometry.proto";
+
+// A junction is the junction at-grade of two or more roads crossing.
+// 定义交叉路口
+message Junction {
+  optional Id id = 1;  // 编号
+
+  optional Polygon polygon = 2;  // 形状
+
+  repeated Id overlap_id = 3;  // 重叠区域id
+}

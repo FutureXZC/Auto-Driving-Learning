@@ -1,0 +1,58 @@
+syntax = "proto2";
+
+package apollo.hdmap;
+
+import "modules/common/proto/geometry.proto";
+import "modules/map/proto/map_geometry.proto";
+import "modules/map/proto/map_id.proto";
+
+// 定义交通信号灯（红绿灯）
+message Subsignal {
+  enum Type {
+    UNKNOWN = 1;  // 未知
+    CIRCLE = 2;  // 圈形？
+    ARROW_LEFT = 3;  // 向左
+    ARROW_FORWARD = 4;  // 向前
+    ARROW_RIGHT = 5;  // 向右
+    ARROW_LEFT_AND_FORWARD = 6;  // 向左前
+    ARROW_RIGHT_AND_FORWARD = 7;  // 向右前
+    ARROW_U_TURN = 8;  // 掉头
+  };
+
+  optional Id id = 1;  // 编号
+  optional Type type = 2;  // 交通信号灯类型
+
+  // Location of the center of the bulb. now no data support.
+  optional apollo.common.PointENU location = 3;  // ？？？PointENU描述的是一个2d的东西
+}
+
+message SignInfo {
+  enum Type {
+    None = 0;
+    NO_RIGHT_TURN_ON_RED = 1;  // 红灯时可以右转
+  };
+
+  optional Type type = 1;
+}
+
+message Signal {
+  enum Type {
+    UNKNOWN = 1;  // 未知
+    MIX_2_HORIZONTAL = 2;  // 横向二信号灯
+    MIX_2_VERTICAL = 3;  // 垂直二信号灯
+    MIX_3_HORIZONTAL = 4;  // 横向三信号灯
+    MIX_3_VERTICAL = 5;  // 垂直三信号灯
+    SINGLE = 6;  // 单个信号灯
+  };
+
+  optional Id id = 1;  // 编号
+  optional Polygon boundary = 2;  // 边界
+  repeated Subsignal subsignal = 3;  // 子信号
+  // TODO: add orientation. now no data support.
+  repeated Id overlap_id = 4;  // 重叠区域id
+  optional Type type = 5;  // 定义不同种类信号灯个数和排列方式
+  // stop line
+  repeated Curve stop_line = 6;  // 停止线
+
+  repeated SignInfo sign_info = 7;  // 一种特殊的信号？
+}

@@ -1,0 +1,27 @@
+syntax = "proto2";
+
+package apollo.hdmap;
+
+import "modules/map/proto/map_id.proto";
+import "modules/map/proto/map_geometry.proto";
+
+// A stop sign is a traffic sign to notify drivers that they must stop before
+// proceeding.
+// 停止信号
+message StopSign {
+  optional Id id = 1;  // 编号
+
+  repeated Curve stop_line = 2;  // 停止线
+
+  repeated Id overlap_id = 3;  // 重叠区域id
+
+  enum StopType {
+    UNKNOWN = 0;  // 未知
+    ONE_WAY = 1;  // 只有一车道可以停
+    TWO_WAY = 2; 
+    THREE_WAY = 3; 
+    FOUR_WAY = 4;  
+    ALL_WAY = 5; 
+  };
+  optional StopType type = 4;
+}
