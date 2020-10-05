@@ -7,6 +7,7 @@
 
 - [Apollo 5.5的软件整体架构](./doc/apollo_5.5_architecture.md)
 - [部分数据结构定义整理](./proto)
+- [一些基础算法和概念（持续完善中）](./doc/fundamental_algorithm.md)
 
 ## 贡献者需知
 
@@ -39,16 +40,16 @@ Apollo的数据结构代码采用[ProtoBuf](https://github.com/protocolbuffers/p
 ├─doc
 │      apollo_5.5_architecture.md
 │      Autoware_architecture.md
+│      fundamental_algorithm.md
 │      install&compile_problem.md
 │      
 ├─proto
-│  ├─map
-│  ├─perception   
-│  ├─planning      
-│  └─prediction    
-|
+│  ├─map    
+│  ├─perception     
+│  ├─planning          
+│  └─prediction   
+│            
 └─res
-    ├─apollo_5.5_architecture  
-    ├─autoware_architecture 
-    └─install&compile_problem
+    ├─apollo_5.5_architecture        
+
 ```
