@@ -1,0 +1,215 @@
+syntax = "proto2";
+
+package apollo.planning;
+
+import "modules/common/proto/geometry.proto";
+import "modules/common/proto/vehicle_signal.proto";
+import "modules/routing/proto/routing.proto";
+
+message TargetLane {
+  // lane id
+  optional string id = 1;
+  optional double start_s = 2;      // in meters
+  optional double end_s = 3;        // in meters
+  optional double speed_limit = 4;  // in m/s
+}
+
+message ObjectIgnore {}
+
+// 停车命令/理由 状态码
+enum StopReasonCode {
+  STOP_REASON_HEAD_VEHICLE = 1;  // 有前车
+  STOP_REASON_DESTINATION = 2;  // 到达目的地
+  STOP_REASON_PEDESTRIAN = 3;  // 有行人
+  STOP_REASON_OBSTACLE = 4;  // 有障碍物
+  STOP_REASON_PREPARKING = 5;  
+  STOP_REASON_SIGNAL = 100;  // 红灯
+  STOP_REASON_STOP_SIGN = 101;  // 停车标志
+  STOP_REASON_YIELD_SIGN = 102;  // 礼让标志
+  STOP_REASON_CLEAR_ZONE = 103;  // 空地
+  STOP_REASON_CROSSWALK = 104;  // 人行横道
+  STOP_REASON_CREEPER = 105;  // 蔓生植物（绿化带？）
+  STOP_REASON_REFERENCE_END = 106;  // 参考线停止区
+  STOP_REASON_YELLOW_SIGNAL = 107;  // 黄灯
+  STOP_REASON_PULL_OVER = 108;      // 靠边停车
+  STOP_REASON_SIDEPASS_SAFETY = 109;  // 侧方安全情况
+  STOP_REASON_PRE_OPEN_SPACE_STOP = 200;
+  STOP_REASON_LANE_CHANGE_URGENCY = 201;  // 紧急变道
+  STOP_REASON_EMERGENCY = 202;  // 紧急情况
+}
+
+message ObjectStop {
+  optional StopReasonCode reason_code = 1;
+  optional double distance_s = 2;  // 单位：米
+  // 停车的时候，车辆的前侧中心应该在这一点上
+  optional apollo.common.PointENU stop_point = 3;
+  //停车的时候，车头朝向应为stop_heading.
+  optional double stop_heading = 4;
+  repeated string wait_for_obstacle = 5;
+}
+
+// 距离缓慢移动物体的最小距离
+message ObjectNudge {
+  enum Type {
+    LEFT_NUDGE = 1;   // drive from the left side of the obstacle
+    RIGHT_NUDGE = 2;  // drive from the right side of the obstacle
+    NO_NUDGE = 3;     // No nudge is set.
+  };
+  optional Type type = 1;
+  // 最小侧边距 
+  // type = LEFT_NUDGE 时可用
+  // type = RIGHT_NUDGE 时不可用
+  optional double distance_l = 2;
+}
+
+message ObjectYield {  // 礼让，例如校车、应急车辆、特种车辆
+  optional double distance_s = 1;  // 最小纵向距离
+  optional apollo.common.PointENU fence_point = 2;
+  optional double fence_heading = 3;
+  optional double time_buffer = 4;  // 障碍物到达相交点的最小时间
+}
+
+message ObjectFollow {  // 车辆跟随目标
+  optional double distance_s = 1; 
+  optional apollo.common.PointENU fence_point = 2;
+  optional double fence_heading = 3;
+}
+
+message ObjectOvertake {  // 超车
+  optional double distance_s = 1;
+  optional apollo.common.PointENU fence_point = 2;
+  optional double fence_heading = 3;
+  optional double time_buffer = 4;
+}
+
+message ObjectSidePass {  // 侧面物体/车辆
+  enum Type {
+    LEFT = 1;
+    RIGHT = 2;
+  };
+  optional Type type = 1;
+}
+
+// unified object decision while estop
+message ObjectAvoid {}
+
+message ObjectStatus {
+  optional ObjectMotionType motion_type = 1;
+  optional ObjectDecisionType decision_type = 2;
+}
+
+message ObjectStatic {}
+
+message ObjectDynamic {}
+
+message ObjectMotionType {
+  oneof motion_tag {
+    ObjectStatic static = 1;
+    ObjectDynamic dynamic = 2;
+  }
+}
+
+message ObjectDecisionType {  // 因某物而产生的决策类型
+  oneof object_tag {
+    ObjectIgnore ignore = 1;  // 忽略
+    ObjectStop stop = 2;  // 停车
+    ObjectFollow follow = 3;  // 跟车
+    ObjectYield yield = 4;  // 礼让
+    ObjectOvertake overtake = 5;  // 超车
+    ObjectNudge nudge = 6;  // 缓慢移动
+    ObjectAvoid avoid = 7;  // 避开
+    ObjectSidePass side_pass = 8;  // 侧方行驶
+  }
+}
+
+message ObjectDecision {
+  optional string id = 1;
+  optional int32 perception_id = 2;
+  repeated ObjectDecisionType object_decision = 3;
+}
+
+message ObjectDecisions {
+  repeated ObjectDecision decision = 1;
+}
+
+message MainStop {  // 停车控制
+  optional StopReasonCode reason_code = 1;
+  optional string reason = 2;
+  optional apollo.common.PointENU stop_point = 3;
+  optional double stop_heading = 4;
+  optional apollo.routing.ChangeLaneType change_lane_type = 5;
+}
+
+message EmergencyStopHardBrake {}
+
+message EmergencyStopCruiseToStop {}
+
+message MainEmergencyStop {  // 紧急制动控制
+  // 意外发生时需要紧急制动
+  enum ReasonCode {
+    ESTOP_REASON_INTERNAL_ERR = 1;
+    ESTOP_REASON_COLLISION = 2;
+    ESTOP_REASON_ST_FIND_PATH = 3;
+    ESTOP_REASON_ST_MAKE_DECISION = 4;
+    ESTOP_REASON_SENSOR_ERROR = 5;
+  }
+  optional ReasonCode reason_code = 1;
+  optional string reason = 2;
+  oneof task {
+    EmergencyStopHardBrake hard_brake = 3;         // 急刹车
+    EmergencyStopCruiseToStop cruise_to_stop = 4;  // 匀减速停车 cruise to stop
+  }
+}
+
+message MainCruise {  // 巡航，匀速
+  // cruise current lane
+  optional apollo.routing.ChangeLaneType change_lane_type = 1;
+}
+
+// 变道，不建议使用此message
+message MainChangeLane {
+  enum Type {
+    LEFT = 1;
+    RIGHT = 2;
+  };
+  optional Type type = 1;
+  repeated TargetLane default_lane = 2;
+  optional MainStop default_lane_stop = 3;
+  optional MainStop target_lane_stop = 4;
+}
+
+message MainMissionComplete {  // 到达目的地
+  optional apollo.common.PointENU stop_point = 1;
+  optional double stop_heading = 2;
+}
+
+message MainNotReady {  // 等待，决策系统还未准备好，等待routing数据
+  optional string reason = 1;
+}
+
+message MainParking {  // 停车
+  enum ParkingStatus {
+    // TODO(QiL): implement and expand to more enums
+    IN_PARKING = 1;
+  }
+  optional ParkingStatus status = 1;
+}
+
+message MainDecision {  // 决策命令内容
+  oneof task {
+    MainCruise cruise = 1;
+    MainStop stop = 2;
+    MainEmergencyStop estop = 3;
+    MainChangeLane change_lane = 4 [deprecated = true];
+    MainMissionComplete mission_complete = 6;
+    MainNotReady not_ready = 7;
+    MainParking parking = 8;
+  }
+  repeated TargetLane target_lane = 5 [deprecated = true];
+}
+
+message DecisionResult {  // 决策结果
+  optional MainDecision main_decision = 1;
+  optional ObjectDecisions object_decision = 2;
+  optional apollo.common.VehicleSignal vehicle_signal = 3;
+}
