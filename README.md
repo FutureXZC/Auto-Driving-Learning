@@ -35,17 +35,20 @@ Apollo的数据结构代码采用[ProtoBuf](https://github.com/protocolbuffers/p
 ```
 .
 │  README.md
-├─doc  # 笔记文档 
+│  
+├─doc
 │      apollo_5.5_architecture.md
 │      Autoware_architecture.md
 │      install&compile_problem.md
 │      
-├─proto  # 由ProtoBuf工具定义的数据结构，用于生成代码
-│  ├─map      
-│  ├─perception      
+├─proto
+│  ├─map
+│  ├─perception   
+│  ├─planning      
 │  └─prediction    
-└─res  # 笔记中引用的各种资源文件，例如图片
-    ├─apollo_5.5_architecture   
-    ├─autoware_architecture  
+|
+└─res
+    ├─apollo_5.5_architecture  
+    ├─autoware_architecture 
     └─install&compile_problem
 ```
