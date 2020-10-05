@@ -2,6 +2,7 @@ syntax = "proto2";
 
 package apollo.prediction;
 
+// Feedforward Neural Network 前馈神经网络
 message Vector {
   repeated double columns = 1;
 }

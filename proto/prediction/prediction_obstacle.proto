@@ -8,7 +8,7 @@ import "modules/prediction/proto/scenario.proto";
 import "modules/perception/proto/perception_obstacle.proto";
 import "modules/prediction/proto/feature.proto";
 
-// estimated obstacle intent
+// 预测障碍物的动向
 message ObstacleIntent {
   enum Type {
     UNKNOWN = 0;
@@ -24,7 +24,7 @@ message ObstacleIntent {
   optional Type type = 1 [default = UNKNOWN];
 }
 
-// self driving car intent
+// 自动驾驶车辆的动向
 message Intent {
   enum Type {
     UNKNOWN = 0;
@@ -37,42 +37,42 @@ message Intent {
 
 message PredictionObstacle {
   optional apollo.perception.PerceptionObstacle perception_obstacle = 1;
-  optional double timestamp = 2;  // GPS time in seconds
-  // the length of the time for this prediction (e.g. 10s)
+  optional double timestamp = 2;  // GPS时间以秒为单位
+  // 预测时长 (e.g. 10s)
   optional double predicted_period = 3;
-  // can have multiple trajectories per obstacle
+  // 每一障碍可能有多种预测路径
   repeated Trajectory trajectory = 4;
 
-  // estimated obstacle intent
+  // 预测障碍物的动向
   optional ObstacleIntent intent = 5;
 
   optional ObstaclePriority priority = 6;
 
   optional bool is_static = 7 [default = false];
 
-  // Feature history latest -> earliest sequence
+  // 特征历史序列 latest -> earliest 
   repeated Feature feature = 8;
 }
 
 message PredictionObstacles {
-  // timestamp is included in header
+  // 时间戳包含在头部
   optional apollo.common.Header header = 1;
 
-  // make prediction for multiple obstacles
+  //为多个障碍物做预测
   repeated PredictionObstacle prediction_obstacle = 2;
 
   // perception error code
   optional apollo.common.ErrorCode perception_error_code = 3;
 
-  // start timestamp
+  // 开始时间戳
   optional double start_timestamp = 4;
 
-  // end timestamp
+  // 结束时间戳
   optional double end_timestamp = 5;
 
-  // self driving car intent
+  // 自动驾驶车辆的动向
   optional Intent intent = 6;
 
-  // Scenario
+  // 方案
   optional Scenario scenario = 7;
 }
