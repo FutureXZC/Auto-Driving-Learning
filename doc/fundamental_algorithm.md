@@ -19,12 +19,22 @@ CSDN：[世界坐标系、相机坐标系、图像平面坐标系](https://blog.
 
 博客园：[投影矩阵与最小二乘法的关系](https://www.cnblogs.com/bigmonkey/p/9897047.html)
 
+## 无人车运动规划算法综述
+
+同济大学学报（自然科学版）：[无人车运动规划算法综述](http://tjxb.cnjournals.cn/html/2017/08/16339.htm)
+
 ## A<sup>*</sup>算法
 
-知乎（阿里云云栖账号）：[路径规划之 A* 算法](https://zhuanlan.zhihu.com/p/54510444)
+知乎（阿里云云栖账号）：[路径规划之 A* 算法](https://zhuanlan.zhihu.com/p/54510444)  
+超详细版本：[A<sup>*</sup> Pathfinding for Beginners](https://www.gamedev.net/reference/articles/article2003.asp)
+
+## Reeds-Shepp曲线
+
+论文原文：[Optimal paths for a car that goes forwards and backwards](http://sector3.imm.uran.ru/shepp/Reeds_Shepp_trunk.pdf)  
+CSDN动图解析（未涉及算法细节）：[Reeds-Shepp和Dubins曲线简介](https://blog.csdn.net/robinvista/article/details/95137143)
 
 ## 混合A<sup>*</sup>算法
 
-原文：[Practical Search Techniques in Path Planning for Autonomous Driving](https://www.aaai.org/Papers/Workshops/2008/WS-08-10/WS08-10-006.pdf)  
+论文原文：[Practical Search Techniques in Path Planning for Autonomous Driving](https://www.aaai.org/Papers/Workshops/2008/WS-08-10/WS08-10-006.pdf)  
+中文注释的论文源码：[teddyluo-hybrid-a-star-annotation](https://github.com/teddyluo/hybrid-a-star-annotation)  
 CSDN流程图解析：[中文流程图解析](https://blog.csdn.net/qq_31815513/article/details/88709640)  
-更详细的解析（图片和视频需科学上网才能观看）：[Explaining the Hybrid A Star pathfinding algorithm for selfdriving cars](https://blog.habrador.com/2015/11/explaining-hybrid-star-pathfinding.html)
