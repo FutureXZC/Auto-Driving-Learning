@@ -7,8 +7,9 @@
 
 - [Apollo 5.5安装和编译过程中遇到的问题](./doc/install&compile_problem.md)
 - [Apollo 5.5的软件整体架构](./doc/apollo_5.5_architecture.md)
-- [部分数据结构定义整理](./proto)
+- [部分数据结构定义整理（持续完善中）](./proto)
 - [一些基础算法和概念（持续完善中）](./doc/fundamental_algorithm.md)
+- [Coursera课程中用到的代码及运行结果](./code/coursera)
 
 ## 贡献者需知
 
@@ -37,6 +38,9 @@ Apollo的数据结构代码采用[ProtoBuf](https://github.com/protocolbuffers/p
 ```
 .
 │  README.md
+├─code
+│  └─coursera
+│      └─Visual Perception for Self-Driving Cars
 │  
 ├─doc
 │      apollo_5.5_architecture.md
