@@ -9,7 +9,7 @@
 
 在进入到docker内部执行`./apollo.sh build`时，无法正常下载某些包依赖。如图所示，此处无法下载civetweb包，影响到后续的编译。  
 此前在下载包ad-rss-lib时，也出现过类似的问题。
-![error](/res/install&compile_problem/0_package_error.png)
+![error](/res/install_and_compile_problem/0_package_error.png)
 
 ## 写在前面
 
@@ -25,7 +25,7 @@
   
 另外，linux下的git具有断点续传的功能，这一点比windows系统下的git要好（随便找个几G的大项目试试，必断线，然后可以在目标位置发现一个下了一半的项目文件/文件夹）。尽管容器内挂载的系统也是linux，但是一旦被判定为断线而下载失败，就会终止编译程序，下次编译时由于检测不到包对应的.marker文件，又会重新下载，所以在该编译环境下实则是失去了断点续传的功能。  
   
-![cache](/res/install&compile_problem/cache.jpg)  
+![cache](/res/install_and_compile_problem/cache.jpg)  
 
 ## 解决方案
 
@@ -39,7 +39,7 @@
 
 docker具有数据卷机制，能够实现容器和host之间共享文件和文件夹。而Apollo项目的共享文件夹就是`apollo`（也可能叫做`apollo-5.0`、`apollo-master`或者其他什么名字，取决于clone源码时的仓库和分支名字，为便于描述，本文中的`apollo`文件夹即表示共享文件夹），将下载好的包直接放入`apollo`文件夹下即可在容器内被检测到。如下图，我将包文件夹命名为`civetweb-1.11`：  
   
-![save-place](/res/install&compile_problem/save-place.jpg)  
+![save-place](/res/install_and_compile_problem/save-place.jpg)  
 
 >  Docker容器数据卷详解（共享数据）：https://blog.csdn.net/weixin_40322495/article/details/84957433
 
@@ -49,11 +49,11 @@ docker具有数据卷机制，能够实现容器和host之间共享文件和文�
   
 Apollo项目中所有第三方包的配置数据均在`third_party`中，该目录下的所有文件夹中都至少拥有`包名.BUILD`、`BUILD`和`workspace.bzl`三个文件，他们共同构成了Bazel编译所需的一切配置。在`workspace.bzl`中配置的就是包的安装位置。在容器中含有一些基本的库支持，因此某些包的配置只需要写入本地加载的信息即可，例如如下图所示的adolc包的配置信息，其path指向的是容器内挂载系统的`/usr/include`。**注意**：该路径是容器内的绝对路径，而非host的，容器内部也是一个linux系统，除`apollo`外该系统下的其他目录都没有挂载到数据卷上。  
   
-![local-config](/res/install&compile_problem/local-config.jpg)  
+![local-config](/res/install_and_compile_problem/local-config.jpg)  
   
 因此，我们只需要找到安装出错的civetweb包的配置文件，并模仿adolc这样本地加载的包的配置文件进行书写即可，即包裹在native.new_local_respository内，如下图所示：  
   
-![myconfig](/res/install&compile_problem/myconfig.jpg)  
+![myconfig](/res/install_and_compile_problem/myconfig.jpg)  
   
 在我的host中，包文件夹实际上在`/home/xiang/apollo/civetweb-1.11`下，但是可以看到，我的路径配置并不是这样写的。由于编译是在容器中执行的，而在容器中，`apollo`文件夹就在根目录下，所以这里的路径实际上写的是在容器中的绝对路径，即`/apollo/civetweb-1.11`。注意，这里的build_file参数要记得做对应的修改，name应该填上包名。  
   
@@ -74,4 +74,4 @@ Apollo项目中所有第三方包的配置数据均在`third_party`中，该目�
 
 修改完上述配置后，进入容器编译即可。编译结束后可以看到生成了几个`bazel-×`文件，如下图。此时就可以正确运行Apollo项目了。  
   
-![compile-res](/res/install&compile_problem/compile-res.jpg)
+![compile-res](/res/install_and_compile_problem/compile-res.jpg)
