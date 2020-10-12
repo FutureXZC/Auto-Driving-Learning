@@ -30,6 +30,9 @@ bilibili：[摄像机透视投影模型](https://www.bilibili.com/video/BV18J411
 
 OpenCV文档：[Feature Detection and Description](https://opencv-python-tutroals.readthedocs.io/en/latest/py_tutorials/py_feature2d/py_table_of_contents_feature2d/py_table_of_contents_feature2d.html)
 
+## 立体匹配基本过程
+
+CSDN：[立体匹配---立体匹配过程](https://blog.csdn.net/u010368556/article/details/72823875?utm_medium=distribute.pc_aggpage_search_result.none-task-blog-2~all~first_rank_v2~rank_v25-1-72823875.nonecase&utm_term=%E7%AB%8B%E4%BD%93%E5%8C%B9%E9%85%8D%E5%9B%9B%E4%B8%AA%E6%AD%A5%E9%AA%A4&spm=1000.2123.3001.4430)
 
 ## 半全局匹配（SGM, Semi-Global Matching）算法
 
