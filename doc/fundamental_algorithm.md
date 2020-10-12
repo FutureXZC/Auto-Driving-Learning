@@ -30,16 +30,12 @@ bilibili：[摄像机透视投影模型](https://www.bilibili.com/video/BV18J411
 
 OpenCV文档：[Feature Detection and Description](https://opencv-python-tutroals.readthedocs.io/en/latest/py_tutorials/py_feature2d/py_table_of_contents_feature2d/py_table_of_contents_feature2d.html)
 
-## 立体匹配基本过程
-
-CSDN：[立体匹配---立体匹配过程](https://blog.csdn.net/u010368556/article/details/72823875?utm_medium=distribute.pc_aggpage_search_result.none-task-blog-2~all~first_rank_v2~rank_v25-1-72823875.nonecase&utm_term=%E7%AB%8B%E4%BD%93%E5%8C%B9%E9%85%8D%E5%9B%9B%E4%B8%AA%E6%AD%A5%E9%AA%A4&spm=1000.2123.3001.4430)
-
 ## 半全局匹配（SGM, Semi-Global Matching）算法
 
 论文原文：[Stereo Processing by Semi-Global Matching and Mutual Information](http://ieeexplore.ieee.org/xpls/abs_all.jsp?arnumber=4359315&tag=1)
+CSDN：[双目立体匹配步骤详解](https://blog.csdn.net/rs_lys/article/details/83302323)  
 知乎讲解：[一文读懂经典双目稠密匹配算法SGM
-David LEE](https://zhuanlan.zhihu.com/p/49272032)  
-利用泰勒展开将联合熵的计算转化为对像素的求和运算： [Visual CorrespondenceUsing Energy Minimization and Mutual Information](https://wenku.baidu.com/view/03cdf36548d7c1c708a145a9.html)
+David LEE](https://zhuanlan.zhihu.com/p/49272032)
 
 ## 无人车运动规划算法综述
 
