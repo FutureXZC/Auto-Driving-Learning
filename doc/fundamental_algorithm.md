@@ -30,6 +30,14 @@ bilibili：[摄像机透视投影模型](https://www.bilibili.com/video/BV18J411
 
 OpenCV文档：[Feature Detection and Description](https://opencv-python-tutroals.readthedocs.io/en/latest/py_tutorials/py_feature2d/py_table_of_contents_feature2d/py_table_of_contents_feature2d.html)
 
+
+## 半全局匹配（SGM, Semi-Global Matching）算法
+
+论文原文：[Stereo Processing by Semi-Global Matching and Mutual Information](http://ieeexplore.ieee.org/xpls/abs_all.jsp?arnumber=4359315&tag=1)
+知乎讲解：[一文读懂经典双目稠密匹配算法SGM
+David LEE](https://zhuanlan.zhihu.com/p/49272032)  
+利用泰勒展开将联合熵的计算转化为对像素的求和运算： [Visual CorrespondenceUsing Energy Minimization and Mutual Information](https://wenku.baidu.com/view/03cdf36548d7c1c708a145a9.html)
+
 ## 无人车运动规划算法综述
 
 同济大学学报（自然科学版）：[无人车运动规划算法综述](http://tjxb.cnjournals.cn/html/2017/08/16339.htm)
