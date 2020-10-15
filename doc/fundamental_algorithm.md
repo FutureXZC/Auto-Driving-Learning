@@ -37,6 +37,14 @@ CSDN：[双目立体匹配步骤详解](https://blog.csdn.net/rs_lys/article/det
 知乎讲解：[一文读懂经典双目稠密匹配算法SGM
 David LEE](https://zhuanlan.zhihu.com/p/49272032)
 
+## 边缘检测
+
+博客园：[边缘检测](https://www.cnblogs.com/ronny/p/4001910.html)
+
+## 霍夫变换
+
+博客园：[霍夫变换](https://www.cnblogs.com/php-rearch/p/6760683.html)
+
 ## 无人车运动规划算法综述
 
 同济大学学报（自然科学版）：[无人车运动规划算法综述](http://tjxb.cnjournals.cn/html/2017/08/16339.htm)
