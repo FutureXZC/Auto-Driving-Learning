@@ -11,6 +11,15 @@
 
 bilibili：[【CNN】Youtube上迄今为止最好的卷积神经网络入门教程](https://www.bilibili.com/video/BV1Fx41177ws)
 
+## 反向传播算法
+
+谷歌开发者平台：[反向传播算法](https://google-developers.gonglchuangl.net/machine-learning/crash-course/backprop-scroll/)
+
+## 注意力机制
+
+论文：[Attention Is All You Need](http://courses.cs.ut.ee/MTAT.03.292/2017_fall/uploads/Main/Attention%20is%20All%20you%20need.pdf)
+CSDN：[【计算机视觉】深入理解Attention机制](https://blog.csdn.net/yideqianfenzhiyi/article/details/79422857)
+
 ## 世界坐标系、相机坐标系、图像坐标系的转化
 
 CSDN：[世界坐标系、相机坐标系、图像平面坐标系](https://blog.csdn.net/weizhangyjs/article/details/81020177)
