@@ -15,11 +15,6 @@ bilibili：[【CNN】Youtube上迄今为止最好的卷积神经网络入门教�
 
 谷歌开发者平台：[反向传播算法](https://google-developers.gonglchuangl.net/machine-learning/crash-course/backprop-scroll/)
 
-## 注意力机制
-
-论文：[Attention Is All You Need](http://courses.cs.ut.ee/MTAT.03.292/2017_fall/uploads/Main/Attention%20is%20All%20you%20need.pdf)
-CSDN：[【计算机视觉】深入理解Attention机制](https://blog.csdn.net/yideqianfenzhiyi/article/details/79422857)
-
 ## 世界坐标系、相机坐标系、图像坐标系的转化
 
 CSDN：[世界坐标系、相机坐标系、图像平面坐标系](https://blog.csdn.net/weizhangyjs/article/details/81020177)
@@ -29,10 +24,14 @@ CSDN：[世界坐标系、相机坐标系、图像平面坐标系](https://blog.
 
 博客园：[投影矩阵与最小二乘法的关系](https://www.cnblogs.com/bigmonkey/p/9897047.html)
 
+## SVD与PCA的几何意义
+
+OSCHINA：[从SVD到PCA——奇妙的数学游戏](https://my.oschina.net/findbill/blog/535044)
+
 ## 相机校准
 
 OpenCV文档：[Camera Calibration](https://docs.opencv.org/4.4.0/dc/dbb/tutorial_py_calibration.html)  
-投影矩阵分解：[Pose from known 3D points](https://www.uio.no/studier/emner/matnat/its/nedlagte-emner/UNIK4690/v17/forelesninger/lecture_5_2_pose_from_known_3d_points.pdf)
+投影矩阵分解：[Pose from known 3D points](https://www.uio.no/studier/emner/matnat/its/nedlagte-emner/UNIK4690/v17/forelesninger/lecture_5_2_pose_from_known_3d_points.pdf)  
 bilibili：[摄像机透视投影模型](https://www.bilibili.com/video/BV18J411z7jS?t=5750)
 
 ## OpenCV中的特征提取
@@ -43,8 +42,21 @@ OpenCV文档：[Feature Detection and Description](https://opencv-python-tutroal
 
 论文原文：[Stereo Processing by Semi-Global Matching and Mutual Information](http://ieeexplore.ieee.org/xpls/abs_all.jsp?arnumber=4359315&tag=1)
 CSDN：[双目立体匹配步骤详解](https://blog.csdn.net/rs_lys/article/details/83302323)  
-知乎讲解：[一文读懂经典双目稠密匹配算法SGM
-David LEE](https://zhuanlan.zhihu.com/p/49272032)
+知乎讲解：[一文读懂经典双目稠密匹配算法SGM David LEE](https://zhuanlan.zhihu.com/p/49272032)
+
+## 注意力机制
+
+Attention介绍论文：[Attention Is All You Need](http://courses.cs.ut.ee/MTAT.03.292/2017_fall/uploads/Main/Attention%20is%20All%20you%20need.pdf)  
+bilibili：[从中文Transformer到BERT的模型精讲,以及基于BERT情感分类实战](https://www.bilibili.com/video/BV1sE411Y7cP?p=3)  
+CSDN：[【计算机视觉】深入理解Attention机制](https://blog.csdn.net/yideqianfenzhiyi/article/details/79422857)  
+通道注意力机制：[论文讲解：Squeeze-and-Excitation Networks](https://www.dazhuanlan.com/2020/03/19/5e72f82b3519b/)  
+SE-Block论文：[Squeeze-and-Excitation Networks](https://arxiv.org/pdf/1709.01507)  
+
+## DETR-基于transformer的目标检测
+
+论文原文：[End-to-End Object Detection with Transformers](https://arxiv.org/pdf/2005.12872.pdf)  
+bilibili：[【中文字幕】DETR: End-to-End Object Detection with Transformers论文解读](https://www.bilibili.com/video/BV1Qg4y1B7rL?from=search&seid=14753579937470447596)  
+官方源码：[https://github.com/facebookresearch/detr/blob/master/models/detr.py#L39](https://github.com/facebookresearch/detr/blob/master/models/detr.py#L39)
 
 ## 边缘检测
 
